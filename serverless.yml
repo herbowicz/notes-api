@@ -61,9 +61,6 @@ functions:
           authorizer: aws_iam
   # serverless invoke local --function list --path mocks/list-event.json
   list:
-  # Defines an HTTP API endpoint that calls the main function in list.js
-  # - path: url path is /notes
-  # - method: GET request
     handler: list.main
     events:
       - http:
@@ -71,4 +68,21 @@ functions:
           method: get
           cors: true
           authorizer: aws_iam
-
+  # serverless invoke local --function update --path mocks/update-event.json
+  update:
+    handler: update.main
+    events:
+      - http:
+          path: notes/{id}
+          method: put
+          cors: true
+          authorizer: aws_iam
+  # serverless invoke local --function delete --path mocks/delete-event.json
+  delete:
+    handler: delete.main
+    events:
+      - http:
+          path: notes/{id}
+          method: delete
+          cors: true
+          authorizer: aws_iam
