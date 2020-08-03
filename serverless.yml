@@ -16,7 +16,7 @@ provider:
   stage: prod
   region: eu-west-1
   environment:
-    tableName: notes
+    tableName: process.env.tableName
 
   iamRoleStatements:
     - Effect: Allow
@@ -31,6 +31,14 @@ provider:
       Resource: "arn:aws:dynamodb:eu-west-1:*:*"
 
 functions:
+  # serverless invoke local --function hello  
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          path: hello
+          method: get
+  # serverless invoke local --function create --path mocks/create-event.json
   create:
     handler: create.main
     events:
@@ -39,10 +47,28 @@ functions:
           method: post
           cors: true
           authorizer: aws_iam
-  # test lambda
-  # hello:
-  #   handler: handler.hello
-  #   events:
-  #     - http:
-  #         path: hello
-  #         method: get
+  # serverless invoke local --function get --path mocks/get-event.json
+  get:
+    # Defines an HTTP API endpoint that calls the main function in get.js
+    # - path: url path is /notes/{id}
+    # - method: GET request
+    handler: get.main
+    events:
+      - http:
+          path: notes/{id}
+          method: get
+          cors: true
+          authorizer: aws_iam
+  # serverless invoke local --function list --path mocks/list-event.json
+  list:
+  # Defines an HTTP API endpoint that calls the main function in list.js
+  # - path: url path is /notes
+  # - method: GET request
+    handler: list.main
+    events:
+      - http:
+          path: notes
+          method: get
+          cors: true
+          authorizer: aws_iam
+
