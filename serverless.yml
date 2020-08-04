@@ -16,7 +16,8 @@ provider:
   stage: prod
   region: eu-west-1
   environment:
-    tableName: process.env.tableName
+    tableName: ${env:TABLE_NAME}
+    stripeSecretKey: ${env:STRIPE_SECRET_KEY}
 
   iamRoleStatements:
     - Effect: Allow
@@ -84,5 +85,14 @@ functions:
       - http:
           path: notes/{id}
           method: delete
+          cors: true
+          authorizer: aws_iam
+  billing:
+  # serverless invoke local --function billing --path mocks/billing-event.json
+    handler: billing.main
+    events:
+      - http:
+          path: billing
+          method: post
           cors: true
           authorizer: aws_iam
